@@ -3,6 +3,7 @@ const { successEmbed, errorEmbed } = require('../utils/embeds');
 const { canAdjustCredits } = require('../utils/permissions');
 const database = require('../utils/database');
 const Streamer = require('../models/Streamer');
+const { t } = require('../utils/localization');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -84,20 +85,20 @@ module.exports = {
       
       if (!streamerData) {
         return interaction.editReply({
-          embeds: [errorEmbed('Not Found', 'No streamer profile found.')],
+          embeds: [errorEmbed(t('NOT_FOUND'), t('NO_STREAMER_PROFILE'))],
         });
       }
 
       const streamer = new Streamer(streamerData);
       
       await interaction.editReply({
-        embeds: [successEmbed('Credit Balance', `**User:** ${targetUser || interaction.user}\n**Balance:** 💰 ${streamer.credits} credits`)],
+        embeds: [successEmbed(t('CREDIT_BALANCE'), `**${t('USER')}:** ${targetUser || interaction.user}\n**${t('BALANCE')}:** 💰 ${streamer.credits} ${t('CREDITS')}`)],
       });
 
     } catch (error) {
       console.error('Error checking balance:', error);
       await interaction.editReply({
-        embeds: [errorEmbed('Error', 'Failed to check balance. Please try again later.')],
+        embeds: [errorEmbed(t('ERROR'), t('FAILED_CHECK_BALANCE'))],
       });
     }
   },
@@ -107,7 +108,7 @@ module.exports = {
     
     if (!canAdjustCredits(member)) {
       return interaction.reply({
-        embeds: [errorEmbed('Permission Denied', 'You do not have permission to adjust credits.')],
+        embeds: [errorEmbed(t('PERMISSION_DENIED'), t('NO_PERMISSION_ADJUST_CREDITS'))],
         ephemeral: true,
       });
     }
@@ -123,7 +124,7 @@ module.exports = {
       
       if (!streamerData) {
         return interaction.editReply({
-          embeds: [errorEmbed('Not Found', 'This user is not a streamer.')],
+          embeds: [errorEmbed(t('NOT_FOUND'), t('NOT_A_STREAMER'))],
         });
       }
 
@@ -143,13 +144,13 @@ module.exports = {
       });
 
       await interaction.editReply({
-        embeds: [successEmbed('Credits Added', `Added 💰 ${amount} credits to ${user}\n**Reason:** ${reason}\n**New Balance:** 💰 ${result.newBalance}`)],
+        embeds: [successEmbed(t('CREDITS_ADDED'), `${t('ADDED_CREDITS')} 💰 ${amount} ${t('CREDITS_TO')} ${user}\n**${t('REASON')}:** ${reason}\n**${t('NEW_BALANCE')}:** 💰 ${result.newBalance}`)],
       });
 
     } catch (error) {
       console.error('Error adding credits:', error);
       await interaction.editReply({
-        embeds: [errorEmbed('Error', 'Failed to add credits. Please try again later.')],
+        embeds: [errorEmbed(t('ERROR'), t('FAILED_ADD_CREDITS'))],
       });
     }
   },
@@ -159,7 +160,7 @@ module.exports = {
     
     if (!canAdjustCredits(member)) {
       return interaction.reply({
-        embeds: [errorEmbed('Permission Denied', 'You do not have permission to adjust credits.')],
+        embeds: [errorEmbed(t('PERMISSION_DENIED'), t('NO_PERMISSION_ADJUST_CREDITS'))],
         ephemeral: true,
       });
     }
@@ -175,7 +176,7 @@ module.exports = {
       
       if (!streamerData) {
         return interaction.editReply({
-          embeds: [errorEmbed('Not Found', 'This user is not a streamer.')],
+          embeds: [errorEmbed(t('NOT_FOUND'), t('NOT_A_STREAMER'))],
         });
       }
 
@@ -184,7 +185,7 @@ module.exports = {
       
       if (!result.success) {
         return interaction.editReply({
-          embeds: [errorEmbed('Insufficient Credits', `${user} does not have enough credits.\nCurrent Balance: 💰 ${streamer.credits}`)],
+          embeds: [errorEmbed(t('INSUFFICIENT_CREDITS'), `${user} ${t('NOT_ENOUGH_CREDITS')}\n${t('CURRENT_BALANCE')}: 💰 ${streamer.credits}`)],
         });
       }
 
@@ -201,13 +202,13 @@ module.exports = {
       });
 
       await interaction.editReply({
-        embeds: [successEmbed('Credits Deducted', `Deducted 💰 ${amount} credits from ${user}\n**Reason:** ${reason}\n**New Balance:** 💰 ${result.newBalance}`)],
+        embeds: [successEmbed(t('CREDITS_DEDUCTED'), `${t('DEDUCTED_CREDITS')} 💰 ${amount} ${t('CREDITS_FROM')} ${user}\n**${t('REASON')}:** ${reason}\n**${t('NEW_BALANCE')}:** 💰 ${result.newBalance}`)],
       });
 
     } catch (error) {
       console.error('Error deducting credits:', error);
       await interaction.editReply({
-        embeds: [errorEmbed('Error', 'Failed to deduct credits. Please try again later.')],
+        embeds: [errorEmbed(t('ERROR'), t('FAILED_DEDUCT_CREDITS'))],
       });
     }
   },
@@ -221,7 +222,7 @@ module.exports = {
       const member = await interaction.guild.members.fetch(interaction.user.id);
       if (!canAdjustCredits(member)) {
         return interaction.reply({
-          embeds: [errorEmbed('Permission Denied', 'You can only view your own history.')],
+          embeds: [errorEmbed(t('PERMISSION_DENIED'), t('CAN_ONLY_VIEW_OWN_HISTORY'))],
           ephemeral: true,
         });
       }
@@ -234,7 +235,7 @@ module.exports = {
       
       if (history.length === 0) {
         return interaction.editReply({
-          embeds: [successEmbed('Credit History', 'No transaction history found.')],
+          embeds: [successEmbed(t('CREDIT_HISTORY'), t('NO_TRANSACTION_HISTORY'))],
         });
       }
 
@@ -247,13 +248,13 @@ module.exports = {
       }).join('\n');
 
       await interaction.editReply({
-        embeds: [successEmbed('Credit History (Last 10)', historyText)],
+        embeds: [successEmbed(t('CREDIT_HISTORY_LAST_10'), historyText)],
       });
 
     } catch (error) {
       console.error('Error viewing history:', error);
       await interaction.editReply({
-        embeds: [errorEmbed('Error', 'Failed to load history. Please try again later.')],
+        embeds: [errorEmbed(t('ERROR'), t('FAILED_LOAD_HISTORY'))],
       });
     }
   },

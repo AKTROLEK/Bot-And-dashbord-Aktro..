@@ -2,7 +2,30 @@
 
 ## Overview
 
-This bot implements a two-tier localization system to support multiple languages, including Arabic, while working within Discord API limitations.
+This bot implements a two-tier localization system to support multiple languages, with **Arabic as the default language**, while working within Discord API limitations.
+
+## Current Configuration
+
+**Default Language:** Arabic (العربية) 🇸🇦
+
+All user-facing messages, responses, embeds, and content are displayed in Arabic by default.
+
+### What's in Arabic:
+✅ All success messages  
+✅ All error messages  
+✅ All help documentation  
+✅ All embeds and responses  
+✅ All reports and analytics  
+✅ All ticket messages  
+✅ All credit notifications  
+✅ **100% of user-visible content**
+
+### What remains in English:
+❌ Command names (e.g., `/apply`, `/credits`, `/help`)  
+❌ Option names (e.g., `platform`, `username`, `reason`)  
+❌ Choice values (internal identifiers)
+
+**Why?** Discord API does not support Arabic for command/option names. This is a Discord limitation, not a bot limitation.
 
 ## Two-Tier Approach
 
@@ -16,20 +39,20 @@ Discord's slash command system only supports specific locale codes for command n
 - `no`, `pl`, `pt-BR`, `ro`, `ru`, `es-ES`, `es-419`, `sv-SE`, `th`
 - `tr`, `uk`, `vi`
 
-**Result:** Slash command names and options will appear in **English** for Arabic users.
+**Result:** Slash command names and options will appear in **English** (this is a Discord API limitation).
 
-### Tier 2: User-Facing Messages (Bot Level)
+### Tier 2: User-Facing Messages (Bot Level) ✅
 
-The bot's **responses, embeds, and messages** support ALL languages, including Arabic!
+The bot's **responses, embeds, and messages** are fully in Arabic!
 
 **Arabic Support Includes:**
-- ✅ Success/error messages
-- ✅ Ticket embeds
-- ✅ Application confirmations
-- ✅ Credit notifications
-- ✅ All user-facing content
-
-The bot detects the user's Discord locale and responds in their preferred language when available.
+- ✅ Success/error messages (all in Arabic)
+- ✅ Ticket embeds (all in Arabic)
+- ✅ Application confirmations (all in Arabic)
+- ✅ Credit notifications (all in Arabic)
+- ✅ Help and documentation (all in Arabic)
+- ✅ Reports and analytics (all in Arabic)
+- ✅ **All user-facing content is in Arabic by default**
 
 ## How It Works
 
@@ -62,22 +85,31 @@ This ensures that:
 
 ### For User Messages
 
-The `t()` function provides translations for all languages:
+The `t()` function provides translations with **Arabic as the default**:
 
 ```javascript
-function t(key, locale = 'en') {
-    const languageFile = locales.get(locale) || locales.get('en');
+// اللغة الافتراضية هي العربية
+function t(key, locale = 'ar') {
+    const languageFile = locales.get(locale) || locales.get('ar');
     return languageFile[key] || key;
 }
 ```
 
-Usage in commands:
+Usage in commands (Arabic by default):
 ```javascript
-const userLocale = interaction.locale === 'ar' ? 'ar' : 'en';
+// No need to specify locale - Arabic is default
 await interaction.reply({
     embeds: [successEmbed(
-        t('EMBED_APPLICATION_SUCCESS_TITLE', userLocale),
-        t('EMBED_APPLICATION_SUCCESS_DESCRIPTION', userLocale)
+        t('EMBED_APPLICATION_SUCCESS_TITLE'),
+        t('EMBED_APPLICATION_SUCCESS_DESCRIPTION')
+    )]
+});
+
+// Or specify explicitly if needed
+await interaction.reply({
+    embeds: [successEmbed(
+        t('EMBED_APPLICATION_SUCCESS_TITLE', 'ar'),
+        t('EMBED_APPLICATION_SUCCESS_DESCRIPTION', 'ar')
     )]
 });
 ```
