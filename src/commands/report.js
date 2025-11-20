@@ -3,6 +3,7 @@ const { reportEmbed, errorEmbed } = require('../utils/embeds');
 const { canViewReports } = require('../utils/permissions');
 const database = require('../utils/database');
 const Streamer = require('../models/Streamer');
+const { t } = require('../utils/localization');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -36,7 +37,7 @@ module.exports = {
     
     if (!canViewReports(member)) {
       return interaction.reply({
-        embeds: [errorEmbed('Permission Denied', 'You do not have permission to view reports.')],
+        embeds: [errorEmbed(t('PERMISSION_DENIED'), t('NO_PERMISSION_VIEW_REPORTS'))],
         ephemeral: true,
       });
     }
@@ -63,7 +64,7 @@ module.exports = {
 
       if (streamers.length === 0) {
         return interaction.editReply({
-          embeds: [errorEmbed('No Data', 'No active streamers found.')],
+          embeds: [errorEmbed(t('NO_DATA'), t('NO_ACTIVE_STREAMERS'))],
         });
       }
 
@@ -82,22 +83,22 @@ module.exports = {
       });
 
       const fields = [
-        { name: 'Active Streamers', value: streamers.length.toString(), inline: true },
-        { name: 'Total Videos', value: totalVideos.toString(), inline: true },
-        { name: 'Total Stream Hours', value: totalStreamHours.toString(), inline: true },
-        { name: 'Total Views', value: totalViews.toLocaleString(), inline: true },
-        { name: 'Average Videos/Streamer', value: (totalVideos / streamers.length).toFixed(1), inline: true },
-        { name: 'Average Hours/Streamer', value: (totalStreamHours / streamers.length).toFixed(1), inline: true },
+        { name: t('ACTIVE_STREAMERS'), value: streamers.length.toString(), inline: true },
+        { name: t('TOTAL_VIDEOS'), value: totalVideos.toString(), inline: true },
+        { name: t('TOTAL_STREAM_HOURS'), value: totalStreamHours.toString(), inline: true },
+        { name: t('TOTAL_VIEWS'), value: totalViews.toLocaleString(), inline: true },
+        { name: t('AVERAGE_VIDEOS_STREAMER'), value: (totalVideos / streamers.length).toFixed(1), inline: true },
+        { name: t('AVERAGE_HOURS_STREAMER'), value: (totalStreamHours / streamers.length).toFixed(1), inline: true },
       ];
 
       await interaction.editReply({
-        embeds: [reportEmbed('Weekly Performance Report', { fields })],
+        embeds: [reportEmbed(t('WEEKLY_PERFORMANCE_REPORT'), { fields })],
       });
 
     } catch (error) {
       console.error('Error generating weekly report:', error);
       await interaction.editReply({
-        embeds: [errorEmbed('Error', 'Failed to generate report. Please try again later.')],
+        embeds: [errorEmbed(t('ERROR'), t('FAILED_GENERATE_REPORT'))],
       });
     }
   },
@@ -111,7 +112,7 @@ module.exports = {
 
       if (streamers.length === 0) {
         return interaction.editReply({
-          embeds: [errorEmbed('No Data', 'No active streamers found.')],
+          embeds: [errorEmbed(t('NO_DATA'), t('NO_ACTIVE_STREAMERS'))],
         });
       }
 
@@ -132,22 +133,22 @@ module.exports = {
       });
 
       const fields = [
-        { name: 'Active Streamers', value: streamers.length.toString(), inline: true },
-        { name: 'Total Videos', value: totalVideos.toString(), inline: true },
-        { name: 'Total Stream Hours', value: totalStreamHours.toString(), inline: true },
-        { name: 'Total Views', value: totalViews.toLocaleString(), inline: true },
-        { name: 'Total Engagement', value: totalEngagement.toLocaleString(), inline: true },
-        { name: 'Average Engagement Rate', value: totalViews > 0 ? `${((totalEngagement / totalViews) * 100).toFixed(2)}%` : '0%', inline: true },
+        { name: t('ACTIVE_STREAMERS'), value: streamers.length.toString(), inline: true },
+        { name: t('TOTAL_VIDEOS'), value: totalVideos.toString(), inline: true },
+        { name: t('TOTAL_STREAM_HOURS'), value: totalStreamHours.toString(), inline: true },
+        { name: t('TOTAL_VIEWS'), value: totalViews.toLocaleString(), inline: true },
+        { name: t('TOTAL_ENGAGEMENT'), value: totalEngagement.toLocaleString(), inline: true },
+        { name: t('AVERAGE_ENGAGEMENT_RATE'), value: totalViews > 0 ? `${((totalEngagement / totalViews) * 100).toFixed(2)}%` : '0%', inline: true },
       ];
 
       await interaction.editReply({
-        embeds: [reportEmbed('Monthly Performance Report', { fields })],
+        embeds: [reportEmbed(t('MONTHLY_PERFORMANCE_REPORT'), { fields })],
       });
 
     } catch (error) {
       console.error('Error generating monthly report:', error);
       await interaction.editReply({
-        embeds: [errorEmbed('Error', 'Failed to generate report. Please try again later.')],
+        embeds: [errorEmbed(t('ERROR'), t('FAILED_GENERATE_REPORT'))],
       });
     }
   },
@@ -164,7 +165,7 @@ module.exports = {
 
       if (streamers.length === 0) {
         return interaction.editReply({
-          embeds: [errorEmbed('No Data', 'No active streamers found.')],
+          embeds: [errorEmbed(t('NO_DATA'), t('NO_ACTIVE_STREAMERS'))],
         });
       }
 
@@ -182,13 +183,13 @@ module.exports = {
       }).join('\n');
 
       await interaction.editReply({
-        embeds: [reportEmbed(`Top ${count} Streamers`, { description })],
+        embeds: [reportEmbed(`${t('TOP_PERFORMING_STREAMERS')} (${count})`, { description })],
       });
 
     } catch (error) {
       console.error('Error generating top streamers:', error);
       await interaction.editReply({
-        embeds: [errorEmbed('Error', 'Failed to generate report. Please try again later.')],
+        embeds: [errorEmbed(t('ERROR'), t('FAILED_GENERATE_REPORT'))],
       });
     }
   },
@@ -202,7 +203,7 @@ module.exports = {
 
       if (streamers.length === 0) {
         return interaction.editReply({
-          embeds: [errorEmbed('No Data', 'No active streamers found.')],
+          embeds: [errorEmbed(t('NO_DATA'), t('NO_ACTIVE_STREAMERS'))],
         });
       }
 
@@ -230,7 +231,7 @@ module.exports = {
         if (stats.streamers > 0) {
           fields.push({
             name: platform.toUpperCase(),
-            value: `Streamers: ${stats.streamers}\nVideos: ${stats.videos}\nHours: ${stats.hours}\nViews: ${stats.views.toLocaleString()}`,
+            value: `${t('STREAMERS')}: ${stats.streamers}\n${t('TOTAL_VIDEOS')}: ${stats.videos}\n${t('TOTAL_STREAM_HOURS')}: ${stats.hours}\n${t('TOTAL_VIEWS')}: ${stats.views.toLocaleString()}`,
             inline: true,
           });
         }
@@ -238,18 +239,18 @@ module.exports = {
 
       if (fields.length === 0) {
         return interaction.editReply({
-          embeds: [errorEmbed('No Data', 'No platform data available.')],
+          embeds: [errorEmbed(t('NO_DATA'), t('NO_PLATFORM_DATA'))],
         });
       }
 
       await interaction.editReply({
-        embeds: [reportEmbed('Platform Comparison', { fields })],
+        embeds: [reportEmbed(t('PLATFORM_COMPARISON'), { fields })],
       });
 
     } catch (error) {
       console.error('Error generating platform comparison:', error);
       await interaction.editReply({
-        embeds: [errorEmbed('Error', 'Failed to generate report. Please try again later.')],
+        embeds: [errorEmbed(t('ERROR'), t('FAILED_GENERATE_REPORT'))],
       });
     }
   },

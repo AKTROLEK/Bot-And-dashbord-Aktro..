@@ -3,6 +3,7 @@ const { successEmbed, errorEmbed, streamerProfileEmbed } = require('../utils/emb
 const { hasManagementPermission } = require('../utils/permissions');
 const database = require('../utils/database');
 const Streamer = require('../models/Streamer');
+const { t } = require('../utils/localization');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -100,7 +101,7 @@ module.exports = {
         const member = await interaction.guild.members.fetch(interaction.user.id);
         if (!hasManagementPermission(member)) {
           return interaction.editReply({
-            embeds: [errorEmbed('Permission Denied', 'You can only view your own profile.')],
+            embeds: [errorEmbed(t('PERMISSION_DENIED'), t('CAN_ONLY_VIEW_OWN_PROFILE'))],
           });
         }
       }
@@ -109,7 +110,7 @@ module.exports = {
       
       if (!streamerData) {
         return interaction.editReply({
-          embeds: [errorEmbed('Not Found', 'No streamer profile found for this user.')],
+          embeds: [errorEmbed(t('NOT_FOUND'), t('NO_STREAMER_PROFILE_USER'))],
         });
       }
 
@@ -122,7 +123,7 @@ module.exports = {
     } catch (error) {
       console.error('Error viewing profile:', error);
       await interaction.editReply({
-        embeds: [errorEmbed('Error', 'Failed to load profile. Please try again later.')],
+        embeds: [errorEmbed(t('ERROR'), t('FAILED_LOAD_PROFILE'))],
       });
     }
   },
@@ -132,7 +133,7 @@ module.exports = {
     
     if (!hasManagementPermission(member)) {
       return interaction.reply({
-        embeds: [errorEmbed('Permission Denied', 'You do not have permission to approve streamers.')],
+        embeds: [errorEmbed(t('PERMISSION_DENIED'), t('NO_PERMISSION_APPROVE_STREAMERS'))],
         ephemeral: true,
       });
     }
@@ -155,7 +156,7 @@ module.exports = {
         database.saveStreamer(user.id, streamer);
         
         await interaction.editReply({
-          embeds: [successEmbed('Streamer Updated', `${user} has been updated and activated.\nPlatform: ${platform}\nUsername: ${username}`)],
+          embeds: [successEmbed(t('STREAMER_UPDATED'), `${user} ${t('HAS_BEEN_UPDATED_ACTIVATED')}\n${t('PLATFORM')}: ${platform}\n${t('USERNAME')}: ${username}`)],
         });
       } else {
         // Create new streamer
@@ -172,14 +173,14 @@ module.exports = {
         database.saveStreamer(user.id, streamer);
         
         await interaction.editReply({
-          embeds: [successEmbed('Streamer Approved', `${user} has been approved as a streamer!\nPlatform: ${platform}\nUsername: ${username}\nStarting Credits: 100`)],
+          embeds: [successEmbed(t('STREAMER_APPROVED'), `${user} ${t('HAS_BEEN_APPROVED')}\n${t('PLATFORM')}: ${platform}\n${t('USERNAME')}: ${username}\n${t('NEW_BALANCE')}: 100`)],
         });
       }
 
     } catch (error) {
       console.error('Error approving streamer:', error);
       await interaction.editReply({
-        embeds: [errorEmbed('Error', 'Failed to approve streamer. Please try again later.')],
+        embeds: [errorEmbed(t('ERROR'), t('FAILED_APPROVE_STREAMER'))],
       });
     }
   },
@@ -189,7 +190,7 @@ module.exports = {
     
     if (!hasManagementPermission(member)) {
       return interaction.reply({
-        embeds: [errorEmbed('Permission Denied', 'You do not have permission to suspend streamers.')],
+        embeds: [errorEmbed(t('PERMISSION_DENIED'), t('NO_PERMISSION_SUSPEND_STREAMERS'))],
         ephemeral: true,
       });
     }
@@ -204,7 +205,7 @@ module.exports = {
       
       if (!streamerData) {
         return interaction.editReply({
-          embeds: [errorEmbed('Not Found', 'This user is not a streamer.')],
+          embeds: [errorEmbed(t('NOT_FOUND'), t('NOT_A_STREAMER'))],
         });
       }
 
@@ -219,13 +220,13 @@ module.exports = {
       database.saveStreamer(user.id, streamer);
 
       await interaction.editReply({
-        embeds: [successEmbed('Streamer Suspended', `${user} has been suspended.\nReason: ${reason}`)],
+        embeds: [successEmbed(t('STREAMER_SUSPENDED'), `${user} ${t('HAS_BEEN_SUSPENDED')}\n${t('REASON')}: ${reason}`)],
       });
 
     } catch (error) {
       console.error('Error suspending streamer:', error);
       await interaction.editReply({
-        embeds: [errorEmbed('Error', 'Failed to suspend streamer. Please try again later.')],
+        embeds: [errorEmbed(t('ERROR'), t('FAILED_SUSPEND_STREAMER'))],
       });
     }
   },
@@ -235,7 +236,7 @@ module.exports = {
     
     if (!hasManagementPermission(member)) {
       return interaction.reply({
-        embeds: [errorEmbed('Permission Denied', 'You do not have permission to reactivate streamers.')],
+        embeds: [errorEmbed(t('PERMISSION_DENIED'), t('NO_PERMISSION_REACTIVATE_STREAMERS'))],
         ephemeral: true,
       });
     }
@@ -249,7 +250,7 @@ module.exports = {
       
       if (!streamerData) {
         return interaction.editReply({
-          embeds: [errorEmbed('Not Found', 'This user is not a streamer.')],
+          embeds: [errorEmbed(t('NOT_FOUND'), t('NOT_A_STREAMER'))],
         });
       }
 
@@ -259,13 +260,13 @@ module.exports = {
       database.saveStreamer(user.id, streamer);
 
       await interaction.editReply({
-        embeds: [successEmbed('Streamer Reactivated', `${user} has been reactivated.`)],
+        embeds: [successEmbed(t('STREAMER_REACTIVATED'), `${user} ${t('HAS_BEEN_REACTIVATED')}`)],
       });
 
     } catch (error) {
       console.error('Error reactivating streamer:', error);
       await interaction.editReply({
-        embeds: [errorEmbed('Error', 'Failed to reactivate streamer. Please try again later.')],
+        embeds: [errorEmbed(t('ERROR'), t('FAILED_REACTIVATE_STREAMER'))],
       });
     }
   },
@@ -275,7 +276,7 @@ module.exports = {
     
     if (!hasManagementPermission(member)) {
       return interaction.reply({
-        embeds: [errorEmbed('Permission Denied', 'You do not have permission to list streamers.')],
+        embeds: [errorEmbed(t('PERMISSION_DENIED'), t('NO_PERMISSION_LIST_STREAMERS'))],
         ephemeral: true,
       });
     }
@@ -293,22 +294,22 @@ module.exports = {
 
       if (streamers.length === 0) {
         return interaction.editReply({
-          embeds: [successEmbed('Streamers', 'No streamers found.')],
+          embeds: [successEmbed(t('STREAMER_LIST'), t('NO_STREAMERS_FOUND'))],
         });
       }
 
       const streamerList = streamers.map(s => 
-        `<@${s.userId}> - **${s.status}** - Credits: ${s.credits} - Platforms: ${Object.keys(s.platforms).join(', ')}`
+        `<@${s.userId}> - **${s.status}** - ${t('CREDITS')}: ${s.credits} - ${t('PLATFORM')}: ${Object.keys(s.platforms).join(', ')}`
       ).join('\n');
 
       await interaction.editReply({
-        embeds: [successEmbed(`Streamers${status ? ` (${status})` : ''}`, streamerList)],
+        embeds: [successEmbed(`${t('STREAMERS')}${status ? ` (${status})` : ''}`, streamerList)],
       });
 
     } catch (error) {
       console.error('Error listing streamers:', error);
       await interaction.editReply({
-        embeds: [errorEmbed('Error', 'Failed to list streamers. Please try again later.')],
+        embeds: [errorEmbed(t('ERROR'), t('FAILED_LOAD_STREAMERS'))],
       });
     }
   },
