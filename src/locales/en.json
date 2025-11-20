@@ -1,0 +1,29 @@
+{
+  "COMMAND_APPLY_NAME": "apply",
+  "COMMAND_APPLY_DESCRIPTION": "Apply to become a streamer",
+  "COMMAND_APPLY_PLATFORM_NAME": "platform",
+  "COMMAND_APPLY_PLATFORM_DESCRIPTION": "Which platform do you stream on?",
+  "COMMAND_APPLY_USERNAME_NAME": "username",
+  "COMMAND_APPLY_USERNAME_DESCRIPTION": "Your username/channel on that platform",
+  "COMMAND_APPLY_REASON_NAME": "reason",
+  "COMMAND_APPLY_REASON_DESCRIPTION": "Why do you want to join?",
+
+  "PLATFORM_YOUTUBE": "YouTube",
+  "PLATFORM_TWITCH": "Twitch",
+  "PLATFORM_TIKTOK": "TikTok",
+  "PLATFORM_KICK": "Kick",
+
+  "EMBED_APPLICATION_SUCCESS_TITLE": "Application Submitted",
+  "EMBED_APPLICATION_SUCCESS_DESCRIPTION": "Your application has been submitted! Please check {channel} for updates.",
+  "EMBED_APPLICATION_ERROR_TITLE": "Error",
+  "EMBED_APPLICATION_ERROR_DESCRIPTION": "Failed to create application. Please try again later.",
+  "EMBED_APPLICATION_ALREADY_EXISTS_TITLE": "Application Already Exists",
+  "EMBED_APPLICATION_ALREADY_EXISTS_DESCRIPTION": "You already have an open application. Please wait for a response.",
+  
+  "TICKET_EMBED_TITLE": "Streamer Application",
+  "TICKET_EMBED_APPLICANT": "Applicant",
+  "TICKET_EMBED_PLATFORM": "Platform",
+  "TICKET_EMBED_USERNAME": "Username",
+  "TICKET_EMBED_REASON": "Reason",
+  "TICKET_EMBED_FOOTER": "A staff member will review your application shortly."
+}
