@@ -1,0 +1,29 @@
+{
+  "COMMAND_APPLY_NAME": "تقديم",
+  "COMMAND_APPLY_DESCRIPTION": "قدّم طلبًا لتصبح ستريمر",
+  "COMMAND_APPLY_PLATFORM_NAME": "المنصة",
+  "COMMAND_APPLY_PLATFORM_DESCRIPTION": "على أي منصة تقوم بالبث؟",
+  "COMMAND_APPLY_USERNAME_NAME": "اسم_المستخدم",
+  "COMMAND_APPLY_USERNAME_DESCRIPTION": "اسم المستخدم أو القناة على هذه المنصة",
+  "COMMAND_APPLY_REASON_NAME": "السبب",
+  "COMMAND_APPLY_REASON_DESCRIPTION": "لماذا تريد الانضمام؟",
+
+  "PLATFORM_YOUTUBE": "يوتيوب",
+  "PLATFORM_TWITCH": "تويتش",
+  "PLATFORM_TIKTOK": "تيك توك",
+  "PLATFORM_KICK": "كيك",
+
+  "EMBED_APPLICATION_SUCCESS_TITLE": "تم تقديم الطلب",
+  "EMBED_APPLICATION_SUCCESS_DESCRIPTION": "تم إرسال طلبك بنجاح! الرجاء مراجعة {channel} للمستجدات.",
+  "EMBED_APPLICATION_ERROR_TITLE": "خطأ",
+  "EMBED_APPLICATION_ERROR_DESCRIPTION": "فشل في إنشاء الطلب. الرجاء المحاولة مرة أخرى لاحقًا.",
+  "EMBED_APPLICATION_ALREADY_EXISTS_TITLE": "الطلب موجود بالفعل",
+  "EMBED_APPLICATION_ALREADY_EXISTS_DESCRIPTION": "لديك بالفعل طلب مفتوح. الرجاء انتظار الرد.",
+
+  "TICKET_EMBED_TITLE": "طلب انضمام ستريمر",
+  "TICKET_EMBED_APPLICANT": "صاحب الطلب",
+  "TICKET_EMBED_PLATFORM": "المنصة",
+  "TICKET_EMBED_USERNAME": "اسم المستخدم",
+  "TICKET_EMBED_REASON": "السبب",
+  "TICKET_EMBED_FOOTER": "سيقوم أحد أعضاء الإدارة بمراجعة طلبك قريبًا."
+}
