@@ -4,6 +4,7 @@ const { canManageTickets } = require('../utils/permissions');
 const database = require('../utils/database');
 const Ticket = require('../models/Ticket');
 const config = require('../config');
+const { t } = require('../utils/localization');
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -77,7 +78,7 @@ module.exports = {
 
       if (openTicket) {
         return interaction.editReply({
-          embeds: [errorEmbed('Ticket Already Exists', `You already have an open ${type} ticket. Please use that ticket or close it first.`)],
+          embeds: [errorEmbed(t('TICKET_ALREADY_EXISTS'), t('TICKET_ALREADY_EXISTS_DESC').replace('{type}', type))],
         });
       }
 
@@ -122,17 +123,17 @@ module.exports = {
       // Send message in ticket channel
       await ticketChannel.send({
         content: `${interaction.user} | ${config.roles.streamerManager.map(id => `<@&${id}>`).join(' ')}`,
-        embeds: [ticketEmbed(ticket).addFields({ name: 'Description', value: description })],
+        embeds: [ticketEmbed(ticket).addFields({ name: t('DESCRIPTION'), value: description })],
       });
 
       await interaction.editReply({
-        embeds: [successEmbed('Ticket Created', `Your ticket has been created! Check ${ticketChannel} for updates.`)],
+        embeds: [successEmbed(t('TICKET_CREATED'), t('TICKET_CREATED_DESC').replace('{channel}', ticketChannel.toString()))],
       });
 
     } catch (error) {
       console.error('Error creating ticket:', error);
       await interaction.editReply({
-        embeds: [errorEmbed('Error', 'Failed to create ticket. Please try again later.')],
+        embeds: [errorEmbed(t('ERROR'), t('FAILED_CREATE_TICKET'))],
       });
     }
   },
@@ -147,7 +148,7 @@ module.exports = {
 
       if (!ticket) {
         return interaction.editReply({
-          embeds: [errorEmbed('Not a Ticket', 'This command can only be used in ticket channels.')],
+          embeds: [errorEmbed(t('NOT_A_TICKET'), t('MUST_USE_IN_TICKET_CHANNEL'))],
         });
       }
 
@@ -155,16 +156,16 @@ module.exports = {
       const member = await interaction.guild.members.fetch(interaction.user.id);
       if (ticket.userId !== interaction.user.id && !canManageTickets(member)) {
         return interaction.editReply({
-          embeds: [errorEmbed('Permission Denied', 'You do not have permission to close this ticket.')],
+          embeds: [errorEmbed(t('PERMISSION_DENIED'), t('NO_PERMISSION_ASSIGN_TICKETS'))],
         });
       }
 
-      const reason = interaction.options.getString('reason') || 'No reason provided';
+      const reason = interaction.options.getString('reason') || t('REASON');
       ticket.close(interaction.user.id, reason);
       database.saveTicket(ticket.id, ticket);
 
       await interaction.editReply({
-        embeds: [successEmbed('Ticket Closed', `This ticket has been closed.\nReason: ${reason}\n\nThis channel will be deleted in 10 seconds.`)],
+        embeds: [successEmbed(t('TICKET_CLOSED'), t('TICKET_CLOSED_DESC').replace('{reason}', reason))],
       });
 
       // Delete channel after delay
@@ -180,7 +181,7 @@ module.exports = {
     } catch (error) {
       console.error('Error closing ticket:', error);
       await interaction.editReply({
-        embeds: [errorEmbed('Error', 'Failed to close ticket. Please try again later.')],
+        embeds: [errorEmbed(t('ERROR'), t('FAILED_CLOSE_TICKET'))],
       });
     }
   },
@@ -190,7 +191,7 @@ module.exports = {
     
     if (!canManageTickets(member)) {
       return interaction.reply({
-        embeds: [errorEmbed('Permission Denied', 'You do not have permission to view all tickets.')],
+        embeds: [errorEmbed(t('PERMISSION_DENIED'), t('NO_PERMISSION_LIST_TICKETS'))],
         ephemeral: true,
       });
     }
@@ -202,7 +203,7 @@ module.exports = {
       
       if (openTickets.length === 0) {
         return interaction.editReply({
-          embeds: [successEmbed('Open Tickets', 'There are no open tickets.')],
+          embeds: [successEmbed(t('OPEN_TICKETS'), t('NO_OPEN_TICKETS'))],
         });
       }
 
@@ -211,13 +212,13 @@ module.exports = {
       ).join('\n');
 
       await interaction.editReply({
-        embeds: [successEmbed('Open Tickets', ticketList)],
+        embeds: [successEmbed(t('OPEN_TICKETS'), ticketList)],
       });
 
     } catch (error) {
       console.error('Error listing tickets:', error);
       await interaction.editReply({
-        embeds: [errorEmbed('Error', 'Failed to list tickets. Please try again later.')],
+        embeds: [errorEmbed(t('ERROR'), t('FAILED_LOAD_TICKETS'))],
       });
     }
   },
@@ -227,7 +228,7 @@ module.exports = {
     
     if (!canManageTickets(member)) {
       return interaction.reply({
-        embeds: [errorEmbed('Permission Denied', 'You do not have permission to assign tickets.')],
+        embeds: [errorEmbed(t('PERMISSION_DENIED'), t('NO_PERMISSION_ASSIGN_TICKETS'))],
         ephemeral: true,
       });
     }
@@ -242,7 +243,7 @@ module.exports = {
 
       if (!ticket) {
         return interaction.editReply({
-          embeds: [errorEmbed('Not a Ticket', 'This command can only be used in ticket channels.')],
+          embeds: [errorEmbed(t('NOT_A_TICKET'), t('MUST_USE_IN_TICKET_CHANNEL'))],
         });
       }
 
@@ -250,13 +251,13 @@ module.exports = {
       database.saveTicket(ticket.id, ticket);
 
       await interaction.editReply({
-        embeds: [successEmbed('Ticket Assigned', `This ticket has been assigned to ${staff}.`)],
+        embeds: [successEmbed(t('TICKET_ASSIGNED'), `${t('TICKET_ASSIGNED_TO')} ${staff}`)],
       });
 
     } catch (error) {
       console.error('Error assigning ticket:', error);
       await interaction.editReply({
-        embeds: [errorEmbed('Error', 'Failed to assign ticket. Please try again later.')],
+        embeds: [errorEmbed(t('ERROR'), t('FAILED_ASSIGN_TICKET'))],
       });
     }
   },
