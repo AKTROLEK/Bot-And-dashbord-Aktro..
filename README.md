@@ -130,6 +130,35 @@ API_PORT=3000
 API_SECRET=your_api_secret_key
 ```
 
+## 🌍 Localization (Language Support)
+
+The bot supports multiple languages with a two-level localization system:
+
+### Command Names (Discord API Level)
+- Discord only supports specific locales for slash commands
+- Command names and descriptions will appear in **English** by default
+- This is a limitation imposed by Discord's API (Arabic is not supported)
+- Supported Discord locales include: English, Spanish, French, German, etc.
+
+### User-Facing Messages (Bot Level)
+- **Full Arabic support** for all bot responses, embeds, and messages
+- Messages adapt to user's Discord language preference
+- Includes Arabic translations for:
+  - Application confirmations
+  - Ticket messages
+  - Credit notifications
+  - Error messages
+  - Success confirmations
+
+### Adding New Languages
+To add a new language:
+
+1. Create a new JSON file in `src/locales/` (e.g., `fr.json` for French)
+2. Copy the structure from `en.json` and translate all values
+3. If the language is supported by Discord, add its locale code to `LOCALE_MAP` in `src/utils/localization.js`
+
+**Note**: Even if Discord doesn't support command localization for your language, you can still add full support for user-facing messages.
+
 ## 📝 Commands
 
 ### User Commands
