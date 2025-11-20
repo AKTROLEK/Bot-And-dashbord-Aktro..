@@ -46,8 +46,9 @@ const LOCALE_MAP = {
 };
 
 // الدالة الرئيسية لجلب النصوص
-function t(key, locale = 'en') {
-    const languageFile = locales.get(locale) || locales.get('en');
+// اللغة الافتراضية هي العربية (ar)
+function t(key, locale = 'ar') {
+    const languageFile = locales.get(locale) || locales.get('ar');
     return languageFile[key] || key;
 }
 

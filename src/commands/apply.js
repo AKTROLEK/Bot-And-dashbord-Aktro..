@@ -48,8 +48,8 @@ module.exports = {
   data: commandData,
 
   async execute(interaction) {
-    // تحديد لغة المستخدم لواجهة ديسكورد
-    const userLocale = interaction.locale === 'ar' ? 'ar' : 'en';
+    // اللغة الافتراضية هي العربية
+    const userLocale = 'ar';
 
     const platform = interaction.options.getString(t('COMMAND_APPLY_PLATFORM_NAME', 'en'));
     const username = interaction.options.getString(t('COMMAND_APPLY_USERNAME_NAME', 'en'));
