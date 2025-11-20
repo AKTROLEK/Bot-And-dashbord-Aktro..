@@ -31,7 +31,8 @@ module.exports = {
             .addChoices(
               { name: 'YouTube', value: 'youtube' },
               { name: 'Twitch', value: 'twitch' },
-              { name: 'TikTok', value: 'tiktok' }
+              { name: 'TikTok', value: 'tiktok' },
+              { name: 'Kick', value: 'kick' } // <-- السطر الجديد هنا
             ))
         .addStringOption(option =>
           option.setName('username')
