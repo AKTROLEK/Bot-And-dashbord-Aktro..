@@ -3,34 +3,57 @@ const { successEmbed, errorEmbed } = require('../utils/embeds');
 const database = require('../utils/database');
 const Ticket = require('../models/Ticket');
 const config = require('../config');
+const { t, getAllTranslations } = require('../utils/localization'); // استيراد أداة اللغة
 
-module.exports = {
-  data: new SlashCommandBuilder()
-    .setName('apply')
-    .setDescription('Apply to become a streamer')
-    .addStringOption(option =>
-      option.setName('platform')
-        .setDescription('Which platform do you stream on?')
+// بناء الأمر باستخدام الترجمات
+const commandData = new SlashCommandBuilder()
+    .setName(t('COMMAND_APPLY_NAME', 'en')) // الاسم الأساسي بالإنجليزية
+    .setDescription(t('COMMAND_APPLY_DESCRIPTION', 'en')) // الوصف الأساسي بالإنجليزية
+    .setNameLocalizations(getAllTranslations('COMMAND_APPLY_NAME')) // ترجمات الاسم
+    .setDescriptionLocalizations(getAllTranslations('COMMAND_APPLY_DESCRIPTION')); // ترجمات الوصف
+
+// إضافة الخيارات مع الترجمات
+commandData.addStringOption(option =>
+    option.setName(t('COMMAND_APPLY_PLATFORM_NAME', 'en'))
+        .setDescription(t('COMMAND_APPLY_PLATFORM_DESCRIPTION', 'en'))
+        .setNameLocalizations(getAllTranslations('COMMAND_APPLY_PLATFORM_NAME'))
+        .setDescriptionLocalizations(getAllTranslations('COMMAND_APPLY_PLATFORM_DESCRIPTION'))
         .setRequired(true)
         .addChoices(
-          { name: 'YouTube', value: 'youtube' },
-          { name: 'Twitch', value: 'twitch' },
-          { name: 'TikTok', value: 'tiktok' },
-          { name: 'Kick', value: 'kick' } // <-- السطر الجديد هنا
-        ))
-    .addStringOption(option =>
-      option.setName('username')
-        .setDescription('Your username/channel on that platform')
-        .setRequired(true))
-    .addStringOption(option =>
-      option.setName('reason')
-        .setDescription('Why do you want to join?')
-        .setRequired(true)),
+            { name: t('PLATFORM_YOUTUBE'), value: 'youtube' },
+            { name: t('PLATFORM_TWITCH'), value: 'twitch' },
+            { name: t('PLATFORM_TIKTOK'), value: 'tiktok' },
+            { name: t('PLATFORM_KICK'), value: 'kick' }
+        )
+);
+
+commandData.addStringOption(option =>
+    option.setName(t('COMMAND_APPLY_USERNAME_NAME', 'en'))
+        .setDescription(t('COMMAND_APPLY_USERNAME_DESCRIPTION', 'en'))
+        .setNameLocalizations(getAllTranslations('COMMAND_APPLY_USERNAME_NAME'))
+        .setDescriptionLocalizations(getAllTranslations('COMMAND_APPLY_USERNAME_DESCRIPTION'))
+        .setRequired(true)
+);
+
+commandData.addStringOption(option =>
+    option.setName(t('COMMAND_APPLY_REASON_NAME', 'en'))
+        .setDescription(t('COMMAND_APPLY_REASON_DESCRIPTION', 'en'))
+        .setNameLocalizations(getAllTranslations('COMMAND_APPLY_REASON_NAME'))
+        .setDescriptionLocalizations(getAllTranslations('COMMAND_APPLY_REASON_DESCRIPTION'))
+        .setRequired(true)
+);
+
+
+module.exports = {
+  data: commandData,
 
   async execute(interaction) {
-    const platform = interaction.options.getString('platform');
-    const username = interaction.options.getString('username');
-    const reason = interaction.options.getString('reason');
+    // تحديد لغة المستخدم لواجهة ديسكورد
+    const userLocale = interaction.locale === 'ar' ? 'ar' : 'en';
+
+    const platform = interaction.options.getString(t('COMMAND_APPLY_PLATFORM_NAME', 'en'));
+    const username = interaction.options.getString(t('COMMAND_APPLY_USERNAME_NAME', 'en'));
+    const reason = interaction.options.getString(t('COMMAND_APPLY_REASON_NAME', 'en'));
 
     await interaction.deferReply({ ephemeral: true });
 
@@ -43,7 +66,7 @@ module.exports = {
 
       if (openApplication) {
         return interaction.editReply({
-          embeds: [errorEmbed('Application Already Exists', 'You already have an open application. Please wait for a response.')],
+          embeds: [errorEmbed(t('EMBED_APPLICATION_ALREADY_EXISTS_TITLE', userLocale), t('EMBED_APPLICATION_ALREADY_EXISTS_DESCRIPTION', userLocale))],
         });
       }
 
@@ -62,7 +85,6 @@ module.exports = {
             id: interaction.user.id,
             allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages],
           },
-          // Add permission for management roles
           ...config.roles.admin.map(roleId => ({
             id: roleId,
             allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.ManageChannels],
@@ -90,26 +112,26 @@ module.exports = {
       // Save ticket to database
       database.saveTicket(ticket.id, ticket);
 
-      // Send message in ticket channel
-      const applicationEmbed = successEmbed('Streamer Application', 
-        `**Applicant:** ${interaction.user}\n` +
-        `**Platform:** ${platform}\n` +
-        `**Username:** ${username}\n` +
-        `**Reason:** ${reason}\n\n` +
-        `A staff member will review your application shortly.`
+      // Send message in ticket channel (using Arabic for the ticket)
+      const applicationEmbed = successEmbed(t('TICKET_EMBED_TITLE', 'ar'), 
+        `**${t('TICKET_EMBED_APPLICANT', 'ar')}:** ${interaction.user}\n` +
+        `**${t('TICKET_EMBED_PLATFORM', 'ar')}:** ${platform}\n` +
+        `**${t('TICKET_EMBED_USERNAME', 'ar')}:** ${username}\n` +
+        `**${t('TICKET_EMBED_REASON', 'ar')}:** ${reason}\n\n` +
+        t('TICKET_EMBED_FOOTER', 'ar')
       );
 
       await ticketChannel.send({ 
         content: `${interaction.user} | ${config.roles.streamerManager.map(id => `<@&${id}>`).join(' ')}`,
         embeds: [applicationEmbed] 
       });
-
-      // Log to application channel if configured
+      
+      // Log and reply to user in their language
       if (config.channels.applicationLog) {
         const logChannel = await guild.channels.fetch(config.channels.applicationLog);
         if (logChannel) {
           await logChannel.send({
-            embeds: [successEmbed('New Application', 
+            embeds: [successEmbed('New Application', // Log is always in English for staff
               `**User:** ${interaction.user}\n` +
               `**Platform:** ${platform}\n` +
               `**Ticket:** ${ticketChannel}`
@@ -118,17 +140,14 @@ module.exports = {
         }
       }
 
-      // Reply to user
       await interaction.editReply({
-        embeds: [successEmbed('Application Submitted', 
-          `Your application has been submitted! Please check ${ticketChannel} for updates.`
-        )],
+        embeds: [successEmbed(t('EMBED_APPLICATION_SUCCESS_TITLE', userLocale), t('EMBED_APPLICATION_SUCCESS_DESCRIPTION', userLocale).replace('{channel}', ticketChannel.toString()))],
       });
 
     } catch (error) {
       console.error('Error creating application:', error);
       await interaction.editReply({
-        embeds: [errorEmbed('Error', 'Failed to create application. Please try again later.')],
+        embeds: [errorEmbed(t('EMBED_APPLICATION_ERROR_TITLE', userLocale), t('EMBED_APPLICATION_ERROR_DESCRIPTION', userLocale))],
       });
     }
   },
